@@ -1,0 +1,101 @@
+﻿@page "/contact"
+@using SchoolApp.Logic.Response;
+@using SchoolApp.Logic.ViewModels;
+@inject HttpClient httpClient
+@inject IJSRuntime JS
+
+<!-- ======= Contact Section ======= -->
+<section id="contact" class="contact mt-5">
+    <div class="container" data-aos="fade-up">
+        <div class="section-title">
+            <h2>Contact</h2>
+            <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-5 d-flex align-items-stretch">
+                <div class="info">
+                    <div class="address">
+                        <i class="bi bi-geo-alt"></i>
+                        <h4>Location:</h4>
+                        <p>
+                            A108 Kojo Thompson Street <br>
+                            East Lagon Accra, KJ-SRT 535022<br>
+                            Ghana <br><br>
+                            <strong>Phone:</strong> +1 5589 55488 55<br>
+                            <strong>Email:</strong> info@netcodehighschool.com<br>
+                        </p>
+                    </div>
+                    <div class="email">
+                        <i class="bi bi-envelope"></i>
+                        <h4>Email:</h4>
+                        <p>info@netcodehighschool.com</p>
+                    </div>
+                    <div class="phone">
+                        <i class="bi bi-phone"></i>
+                        <h4>Call:</h4>
+                        <p>+1 5589 55488 55s</p>
+                    </div>
+                    @*<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621" frameborder="0" style="border:0; width: 100%; height: 290px;" allowfullscreen></iframe>
+                    *@
+                </div>
+
+            </div>
+            <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
+                <EditForm Model="model" OnValidSubmit="HandleSubmit">
+                    <DataAnnotationsValidator> </DataAnnotationsValidator>
+                        <ValidationSummary style="list-style:none;"> </ValidationSummary>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" @bind="model.Name" class="form-control">
+                            <ValidationMessage For="@(() => model.Name)" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="name">Your Email</label>
+                            <input type="email" id="email" class="form-control" @bind="model.Email">
+                            <ValidationMessage For="@(() => model.Email)" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Subject</label>
+                        <input type="text" id="subject" class="form-control" @bind="model.Subject">
+                        <ValidationMessage For="@(() => model.Subject)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Message</label>
+                        <textarea class="form-control" id="message" @bind="model.Message" rows="10" ></textarea>
+                        <ValidationMessage For="@(() => model.Message)" />
+                    </div>
+                    <div class="my-3">
+                        <div class="sent-message">@Message</div>
+                    </div>
+                   <button type="submit" class="btn btn-info">Send Message</button>
+                </EditForm>
+
+            </div>
+        </div>
+    </div>
+</section><!-- End Contact Section -->
+
+@code{
+    string Message = string.Empty;
+    ContactViewModels model = new();
+    async Task HandleSubmit()
+    {
+        var result = await httpClient.PostAsJsonAsync("codem/contact", model);
+        var response = await result.Content.ReadFromJsonAsync<ServiceResponse>();
+        Message = response!.Message!;
+        ResetForm();
+    }
+
+    void ResetForm()
+    {
+        model.Name = "";
+        model.Email = "";
+        model.Subject = "";
+        model.Message = "";
+    }
+
+
+}

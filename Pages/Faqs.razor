@@ -1,0 +1,43 @@
+﻿@page "/faqs"
+@using SchoolApp.Logic.Models;
+@inject HttpClient httpClient
+<!-- ======= Frequently Asked Questions Section ======= -->
+<section id="faq" class="faq section-bg mt-5">
+    <div class="container" data-aos="fade-up">
+        <div class="section-title">
+            <h2>Frequently Asked Questions</h2>
+            <p> These questions are ask mostly by our students around the globe, maybe it might help you clear some doubt of yours</p>
+        </div>
+        <div class="faq-list">
+            <ul>
+                @if (faqs != null && faqs.Count > 0)
+                {
+                    int delayCount = 100;
+                    int divCount = 1;
+                    foreach (Faq item in faqs)
+                    {
+                        <li data-aos="fade-up" data-aos-delay="@delayCount">
+                            <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" class="collapse" data-bs-target="#faq-list-@divCount"> <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i> @item.Question</a>
+                            <div id="faq-list-@divCount" class="collapse" data-bs-parent=".faq-list">
+                                <p>@item.Explanation</p>
+                            </div>
+                        </li>
+                        delayCount += 100;
+                        divCount++;
+                    }
+                }
+
+                <li data-aos="fade-up" data-aos-delay="500">
+                    <a href="contact"> <span class="oi oi-phone"></span> Contact Administration</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section><!-- End Frequently Asked Questions Section -->
+@code {
+    List<Faq> faqs = new();
+    protected override async Task OnInitializedAsync()
+    {
+        faqs = await httpClient.GetFromJsonAsync<List<Faq>>("codem/faq");
+    }
+}
